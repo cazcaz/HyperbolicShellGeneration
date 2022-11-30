@@ -10,9 +10,19 @@ class CurveHolder {
     
         Curve getCurve(int index);
 
-        void addCurve(std::unique_ptr<Curve> newCurve);
+        friend std::ostream& operator<<(std::ostream& os, CurveHolder const &curveHolder){
+            int curveCount = curveHolder.m_curves.size();
+            os << "{";
+            for (int i=0; i< curveCount - 1; i++){
+                os << curveHolder.m_curves[i] << ", ";
+            };
+            os << curveHolder.m_curves[curveCount - 1] << "}";
+            return os;
+        };
+
+        void addCurve(Curve* newCurve);
         int getSize();
         void reset();
     private:
-        std::vector<std::unique_ptr<Curve>> m_curves;
+        std::vector<Curve*> m_curves;
 };

@@ -3,36 +3,35 @@
 #include <cmath>
 #include <iostream>
 
-ShellGen::ShellGen() : m_resolution(0) {};
+ShellGen::ShellGen() : m_resolution(0) , m_surface() {};
 ShellGen::~ShellGen() {};
 
-void ShellGen::setInitCurve(Curve initialCurve) {
+void ShellGen::setInitCurve(Curve* initialCurve) {
     m_surface.reset();
-    m_resolution = initialCurve.getResolution();
-    std::unique_ptr<Curve> curvePtr = std::make_unique<Curve>(initialCurve);
-    m_surface.addCurve(std::move(curvePtr));
+    m_resolution = initialCurve->getResolution();
+    m_surface.addCurve(initialCurve);
 }
 
 void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
     VectorMaths vMathsHandler;
+    std::cout << m_surface << std::endl;
     int curveAmount = m_surface.getSize();
     if (curveAmount == 0) {
         return;
     }
     Curve prevCurve = m_surface.getCurve(curveAmount-1);
+    std::cout << prevCurve << std::endl;
     Curve tangents(m_resolution);
     Curve normals(m_resolution);
     Curve binormals(m_resolution);
     if (curveAmount == 1) {
         Curve first = m_surface.getCurve(0);
-        std::cout << first.getResolution() << std::endl;
         for (int i=0; i<m_resolution;i++){
             Point3D nextPoint = first.getValue(i);
             vMathsHandler.normalise(&nextPoint);
             normals.setValue(i, nextPoint);
         }
     } else {
-        std::cout << "here" <<std::endl;
         Curve secondLast = m_surface.getCurve(m_resolution-2);
         Curve last = m_surface.getCurve(m_resolution-1);
         for (int i=0; i<m_resolution;i++){
@@ -49,10 +48,14 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
             vMathsHandler.normalise(&nextPoint);
             tangents.setValue(i, nextPoint);
             Point3D binormal = vMathsHandler.cross(normals.getValue(i), nextPoint);
+            std::cout << binormal << std::endl;
             vMathsHandler.normalise(&binormal);
+            std::cout << binormal << std::endl;
             binormals.setValue(i, binormal);
     }
-    std::cout << normals << tangents << binormals << std::endl;
+    //std::cout << normals << std::endl;
+    //std::cout << tangents << std::endl;
+    //std::cout << binormals << std::endl;
 }
 
 void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef) {
