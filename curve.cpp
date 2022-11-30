@@ -7,6 +7,10 @@ Curve::Curve(int resolution) : m_resolution(resolution) , m_points() {
 
 Curve::~Curve(){};
 
+int Curve::getResolution() {
+    return m_resolution;
+};
+
 void Curve::setValue(int index, Point3D point){
     m_points[resolveIndex(index)] = point;
 };

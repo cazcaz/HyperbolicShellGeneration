@@ -7,6 +7,7 @@ add_library(LibsModule
      circleGen.cpp
      curve.cpp
      curveHolder.cpp
+     shellGen.cpp
 )
 
 add_executable(ShellGeneration main.cpp)

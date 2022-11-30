@@ -9,7 +9,7 @@ CircleGen::CircleGen() {
 
 CircleGen::~CircleGen() {};
 
-Curve CircleGen::makeCircle(float radius, Point3D centre, int resolution) {
+Curve CircleGen::makeCircle(double radius, Point3D centre, int resolution) {
     Curve circle(resolution);
     for (int i = 0;  i < resolution; i++){
         float angle = 2 * M_PI * i / resolution;

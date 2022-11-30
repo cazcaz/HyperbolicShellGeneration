@@ -17,9 +17,8 @@ class Curve {
             return os;
         };
 
+        int getResolution();
         void setValue(int index, Point3D point);
-
-
         Point3D getValue(int index);
     private:
         int resolveIndex(int index);

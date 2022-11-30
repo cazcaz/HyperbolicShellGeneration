@@ -1,16 +1,18 @@
 #pragma once
 #include <vector>
 #include "curve.h"
+#include <memory>
 
 class CurveHolder {
     public:
         CurveHolder();
         ~CurveHolder();
     
-        Curve getLastCurve();
-        Curve getFirstCurve();
+        Curve getCurve(int index);
 
-        void addCurve(Curve newCurve);
+        void addCurve(std::unique_ptr<Curve> newCurve);
+        int getSize();
+        void reset();
     private:
-        std::vector<Curve> m_curves;
+        std::vector<std::unique_ptr<Curve>> m_curves;
 };

@@ -8,5 +8,5 @@ class CircleGen {
         CircleGen();
         ~CircleGen();
 
-        Curve makeCircle(float radius, Point3D centre, int resolution);
+        Curve makeCircle(double radius, Point3D centre, int resolution);
 };
