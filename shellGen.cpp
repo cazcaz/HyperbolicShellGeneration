@@ -3,6 +3,7 @@
 #include "circleGen.h"
 #include <cmath>
 #include <iostream>
+#include "LBFGS.h"
 
 ShellGen::ShellGen() : m_resolution(0) {};
 ShellGen::~ShellGen() {};
@@ -47,6 +48,7 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
             tangents.push_back(nextTangent);
             binormals.push_back(nextBinormal);
     }
+
     
 }
 

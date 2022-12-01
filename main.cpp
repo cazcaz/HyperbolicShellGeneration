@@ -1,5 +1,4 @@
 #include <iostream>
-#include "circleGen.h"
 #include "shellGen.h"
 
 int main(int, char**) {
