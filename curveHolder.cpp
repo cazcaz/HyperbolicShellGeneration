@@ -1,17 +1,17 @@
 #include "curveHolder.h"
 #include <iostream>
+#include <memory>
 
 CurveHolder::CurveHolder() {};
 
 CurveHolder::~CurveHolder() {};
 
-Curve CurveHolder::getCurve(int index) {
+void CurveHolder::getCurve(int index, Curve* curve) {
     int curveAmount = m_curves.size();
     if (curveAmount == 0) {
-        return Curve(0);
+        *curve = Curve(0);
     }
-    std::cout << *m_curves[index] << std::endl;
-    return *m_curves[index];
+   *curve = m_curves[index];
 }
 
 int CurveHolder::getSize() {
@@ -22,6 +22,6 @@ void CurveHolder::reset() {
     m_curves.clear();
 }
 
-void CurveHolder::addCurve(std::unique_ptr<Curve> newCurve) {
-    m_curves.push_back(std::move(newCurve));
+void CurveHolder::addCurve(Curve newCurve) {
+    m_curves.push_back(newCurve);
 }

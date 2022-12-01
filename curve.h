@@ -19,7 +19,7 @@ class Curve {
 
         int getResolution();
         void setValue(int index, Point3D point);
-        Point3D getValue(int index);
+        void getValue(int index, Point3D* point);
     private:
         int resolveIndex(int index);
         std::vector<Point3D> m_points;

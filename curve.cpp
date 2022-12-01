@@ -15,8 +15,8 @@ void Curve::setValue(int index, Point3D point){
     m_points[resolveIndex(index)] = point;
 };
 
-Point3D Curve::getValue(int index){
-    return m_points[resolveIndex(index)];
+void Curve::getValue(int index, Point3D* point){
+    *point = m_points[resolveIndex(index)];
 };
 
 int Curve::resolveIndex(int index){

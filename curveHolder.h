@@ -8,11 +8,11 @@ class CurveHolder {
         CurveHolder();
         ~CurveHolder();
     
-        Curve getCurve(int index);
+        void getCurve(int index, Curve* curve);
 
-        void addCurve(std::unique_ptr<Curve> newCurve);
+        void addCurve(Curve newCurve);
         int getSize();
         void reset();
     private:
-        std::vector<std::unique_ptr<Curve>> m_curves;
+        std::vector<Curve> m_curves;
 };
