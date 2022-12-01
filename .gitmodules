@@ -1,3 +1,0 @@
-[submodule "external/LBFGS"]
-	path = external/LBFGS
-	url = https://github.com/yixuan/LBFGSpp/
