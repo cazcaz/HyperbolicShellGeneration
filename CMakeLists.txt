@@ -10,15 +10,7 @@ add_library(LibsModule
 
 add_executable(ShellGeneration main.cpp)
 
-include(ExternalProject)
-
-ExternalProject_Add (
-       B
-      GIT_REPOSITORY "https://github.com/yixuan/LBFGSpp/"
-      GIT_TAG "563106b"
-      UPDATE_COMMAND ""
-      INSTALL_COMMAND "" )
-
+add_subdirectory(external/LBFGS)
 
 target_link_libraries(ShellGeneration LibsModule)
 
