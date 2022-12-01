@@ -18,7 +18,14 @@ Point3D VectorMaths::cross(Point3D p1 , Point3D p2){
         
 void VectorMaths::normalise(Point3D* p1){
     double norm = p1->norm();
-    *p1 = *p1 / norm;
+    if (norm < 0.0000001) {
+        p1->setX(0);
+        p1->setY(0);
+        p1->setZ(0);
+    } else {
+        *p1 = *p1 / norm;
+    }
 };
+    
 
 

@@ -1,66 +1,59 @@
 #include "shellGen.h"
 #include "vectorMaths.h"
+#include "circleGen.h"
 #include <cmath>
 #include <iostream>
 
-ShellGen::ShellGen() : m_resolution(0) , m_surface() {};
+ShellGen::ShellGen() : m_resolution(0) {};
 ShellGen::~ShellGen() {};
 
-void ShellGen::setInitCurve(std::unique_ptr<Curve> initialCurve) {
-    m_surface.reset();
-    m_resolution = initialCurve->getResolution();
-    m_surface.addCurve(std::move(initialCurve));
+void ShellGen::setInitCurve(double radius, Point3D centre, int resolution) {
+
+    m_resolution = resolution;
+    m_surface.clear();
+    std::vector<Point3D> initCurve;
+    CircleGen circlemaker;
+    circlemaker.makeCircle(radius, centre, resolution, initCurve);
+    m_surface.push_back(initCurve);
 }
 
 void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
     VectorMaths vMathsHandler;
-    int curveAmount = m_surface.getSize();
-    if (curveAmount == 0) {
+    int curveCount = m_surface.size();
+    if(curveCount == 0) {
         return;
     }
-    std::shared_ptr<Curve> prevCurve = m_surface.getCurve(curveAmount-1);
-    std::cout << *prevCurve << std::endl;
-    Curve tangents(m_resolution);
-    Curve normals(m_resolution);
-    Curve binormals(m_resolution);
-    if (curveAmount == 1) {
-        std::shared_ptr<Curve> first = m_surface.getCurve(0);
-        for (int i=0; i<m_resolution;i++){
-            Point3D nextPoint = first->getValue(i);
-            vMathsHandler.normalise(&nextPoint);
-            normals.setValue(i, nextPoint);
+    std::vector<Point3D> normals;
+    std::vector<Point3D> binormals;
+    std::vector<Point3D> tangents;
+    if (curveCount == 1) {
+        for (Point3D firstCurvePoint : m_surface[0]){
+            normals.push_back(firstCurvePoint);
         }
     } else {
-        std::shared_ptr<Curve> secondLast = m_surface.getCurve(m_resolution-2);
-        std::shared_ptr<Curve> last = m_surface.getCurve(m_resolution-1);
-        for (int i=0; i<m_resolution;i++){
-            Point3D nextPoint = last->getValue(i) - secondLast->getValue(i);
+        for (int i =0; i<m_resolution;i++){
+            Point3D nextPoint = m_surface[curveCount-1][i] - m_surface[curveCount-2][i];
             vMathsHandler.normalise(&nextPoint);
-            normals.setValue(i, nextPoint);
+            normals.push_back(nextPoint);
         }
     }
-    //Tangents is assumed to be the nice behaving straight one, not defined by the previous curves
-    float angleChange = 2 * M_PI / m_resolution;
-    for (int i=0; i<m_resolution;i++){
-            float angle =  i * angleChange;
-            Point3D nextPoint(-std::sin(angle), std::cos(angle) ,0);
-            vMathsHandler.normalise(&nextPoint);
-            tangents.setValue(i, nextPoint);
-            Point3D binormal = vMathsHandler.cross(normals.getValue(i), nextPoint);
-            std::cout << binormal << std::endl;
-            vMathsHandler.normalise(&binormal);
-            std::cout << binormal << std::endl;
-            binormals.setValue(i, binormal);
+    //Nicely behaved tangents
+    double angleChange = 2 * M_PI / m_resolution;
+    for (int i =0; i<m_resolution;i++){
+            Point3D nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
+            vMathsHandler.normalise(&nextTangent);
+            Point3D nextBinormal = vMathsHandler.cross(normals[i], nextTangent);
+            vMathsHandler.normalise(&nextBinormal);
+            tangents.push_back(nextTangent);
+            binormals.push_back(nextBinormal);
     }
-    //std::cout << normals << std::endl;
-    //std::cout << tangents << std::endl;
-    std::cout << binormals << std::endl;
+    
 }
 
 void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef) {
 
 }
     
-CurveHolder ShellGen::getSurface() {
+std::vector<std::vector<Point3D>> ShellGen::getSurface() {
 
 }

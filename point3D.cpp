@@ -38,6 +38,18 @@ double Point3D::getZ(){
     return m_z;
 };
 
+void Point3D::setX(double x) {
+    m_x = x;
+}
+
+void Point3D::setY(double y) {
+    m_y = y;
+}
+
+void Point3D::setZ(double z) {
+    m_z = z;
+}
+
 double Point3D::norm(){
     return sqrt(pow(m_x,2)+pow(m_y,2)+pow(m_z,2));
 };
