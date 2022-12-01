@@ -10,8 +10,6 @@ add_library(LibsModule
 
 add_executable(ShellGeneration main.cpp)
 
-add_subdirectory(external/LBFGS)
-
 target_link_libraries(ShellGeneration LibsModule)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
