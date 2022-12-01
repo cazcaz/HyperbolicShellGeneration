@@ -5,8 +5,6 @@ add_library(LibsModule
      point3D.cpp
      vectorMaths.cpp
      circleGen.cpp
-     curve.cpp
-     curveHolder.cpp
      shellGen.cpp
 )
 

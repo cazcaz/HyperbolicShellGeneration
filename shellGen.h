@@ -1,21 +1,21 @@
 #pragma once
-#include "curveHolder.h"
-#include "curve.h"
+#include "point3D.h"
 #include <memory>
+#include <vector>
 
 class ShellGen {
     public:
         ShellGen();
         ~ShellGen();
 
-        void setInitCurve(Curve initialCurve);
+        void setInitCurve(double radius, Point3D centre, int resolution);
 
         void expandCurve(double length, double stiffness = 0.05, double lengthCoef = 100);
 
         void expandCurveNTimes(int iterations, double length, double stiffness = 0.05, double lengthCoef = 100);
     
-        CurveHolder getSurface();
+        std::vector<std::vector<Point3D>> getSurface();
     private:
-        CurveHolder m_surface;
+        std::vector<std::vector<Point3D>> m_surface;
         int m_resolution;
 };

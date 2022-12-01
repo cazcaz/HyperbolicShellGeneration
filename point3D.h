@@ -3,7 +3,7 @@
 
 class Point3D {
     public:
-        Point3D(double x, double y, double z);
+        Point3D(double x=0, double y=0, double z=0);
         ~Point3D();
         Point3D operator+(const Point3D &rhs);
         Point3D operator-(const Point3D &rhs);

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "curve.h"
 #include "Point3D.h"
+#include <vector>
 
 class CircleGen {
     public:
         CircleGen();
         ~CircleGen();
 
-        Curve makeCircle(double radius, Point3D centre, int resolution);
+        void makeCircle(double radius, Point3D centre, int resolution, std::vector<Point3D>& curve);
 };
