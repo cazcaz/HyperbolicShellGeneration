@@ -5,14 +5,15 @@
 #include <iostream>
 #include "LBFGS.h"
 
+using Eigen::Vector3d;
+
 ShellGen::ShellGen() : m_resolution(0) {};
 ShellGen::~ShellGen() {};
 
-void ShellGen::setInitCurve(double radius, Point3D centre, int resolution) {
-
+void ShellGen::setInitCurve(double radius, Vector3d centre, int resolution) {
     m_resolution = resolution;
     m_surface.clear();
-    std::vector<Point3D> initCurve;
+    std::vector<Vector3d> initCurve;
     CircleGen circlemaker;
     circlemaker.makeCircle(radius, centre, resolution, initCurve);
     m_surface.push_back(initCurve);
@@ -24,38 +25,37 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
     if(curveCount == 0) {
         return;
     }
-    std::vector<Point3D> normals;
-    std::vector<Point3D> binormals;
-    std::vector<Point3D> tangents;
+    std::vector<Vector3d> normals;
+    std::vector<Vector3d> binormals;
+    std::vector<Vector3d> tangents;
     if (curveCount == 1) {
-        for (Point3D firstCurvePoint : m_surface[0]){
+        for (Vector3d firstCurvePoint : m_surface[0]){
             normals.push_back(firstCurvePoint);
         }
     } else {
         for (int i =0; i<m_resolution;i++){
-            Point3D nextPoint = m_surface[curveCount-1][i] - m_surface[curveCount-2][i];
-            vMathsHandler.normalise(&nextPoint);
+            Vector3d nextPoint = m_surface[curveCount-1][i] - m_surface[curveCount-2][i];
+            nextPoint.normalize();
             normals.push_back(nextPoint);
         }
     }
     //Nicely behaved tangents
     double angleChange = 2 * M_PI / m_resolution;
     for (int i =0; i<m_resolution;i++){
-            Point3D nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
-            vMathsHandler.normalise(&nextTangent);
-            Point3D nextBinormal = vMathsHandler.cross(normals[i], nextTangent);
-            vMathsHandler.normalise(&nextBinormal);
+            Vector3d nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
+            nextTangent.normalize();
+            Vector3d nextBinormal(0,0,0);
+            //nextBinormal = normals[i].cross(nextTangent);
+            nextBinormal.normalize();
             tangents.push_back(nextTangent);
             binormals.push_back(nextBinormal);
     }
 
-    
+    for (Vector3d point : normals) {
+        std::cout << point << std::endl;
+    }
 }
 
 void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef) {
-
-}
-    
-std::vector<std::vector<Point3D>> ShellGen::getSurface() {
 
 }
