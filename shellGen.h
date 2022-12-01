@@ -8,7 +8,7 @@ class ShellGen {
         ShellGen();
         ~ShellGen();
 
-        void setInitCurve(Curve* initialCurve);
+        void setInitCurve(std::unique_ptr<Curve>  initialCurve);
 
         void expandCurve(double length, double stiffness = 0.05, double lengthCoef = 100);
 

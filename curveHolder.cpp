@@ -5,14 +5,12 @@ CurveHolder::CurveHolder() {};
 
 CurveHolder::~CurveHolder() {};
 
-Curve CurveHolder::getCurve(int index) {
-    int curveAmount = m_curves.size();
-    if (curveAmount == 0) {
-        return Curve(0);
+std::shared_ptr<Curve> CurveHolder::getCurve(int index) {
+    if (m_curves.empty()) {
+        return std::move(std::make_unique<Curve>(0));
     }
-    Curve returnCurve(*m_curves[index]);
-    std::cout << returnCurve << std::endl;
-    return returnCurve;
+    std::shared_ptr<Curve> curveCopy = std::move(m_curves[index]);
+    return curveCopy;
 }
 
 int CurveHolder::getSize() {
@@ -23,6 +21,6 @@ void CurveHolder::reset() {
     m_curves.clear();
 }
 
-void CurveHolder::addCurve(Curve* newCurve) {
-    m_curves.push_back(newCurve);
+void CurveHolder::addCurve(std::unique_ptr<Curve> newCurve) {
+    m_curves.push_back(std::move(newCurve));
 }
