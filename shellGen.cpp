@@ -44,15 +44,14 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
     for (int i =0; i<m_resolution;i++){
             Vector3d nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
             nextTangent.normalize();
-            Vector3d nextBinormal(0,0,0);
-            //nextBinormal = normals[i].cross(nextTangent);
-            nextBinormal.normalize();
+            Vector3d nextBinormal(normals[i][1]*nextTangent[2] - normals[i][2]*nextTangent[1] ,normals[i][2]*nextTangent[0] - normals[i][0]*nextTangent[2], normals[i][0]*nextTangent[1] - normals[i][1]*nextTangent[0]);
+            //nextBinormal.normalize();
             tangents.push_back(nextTangent);
             binormals.push_back(nextBinormal);
     }
-
-    for (Vector3d point : normals) {
+    for (Vector3d point : binormals) {
         std::cout << point << std::endl;
+
     }
 }
 
