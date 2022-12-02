@@ -1,5 +1,4 @@
 #pragma once
-#include "point3D.h"
 #include <memory>
 #include <vector>
 #include <Eigen/core>
@@ -17,7 +16,7 @@ class ShellGen {
 
         void expandCurveNTimes(int iterations, double length, double stiffness = 0.05, double lengthCoef = 100);
 
-        
+
 
     private:
         std::vector<std::vector<Vector3d>> m_surface;

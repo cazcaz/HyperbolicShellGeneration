@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Point3D.h"
 #include <vector>
 #include <Eigen/core>
 

@@ -10,8 +10,9 @@ using Eigen::Vector3d;
 ShellGen::ShellGen() : m_resolution(0) {};
 ShellGen::~ShellGen() {};
 
-void ShellGen::setInitCurve(double radius, Vector3d centre, int resolution) {
+void ShellGen::setInitCurve(double radius, double centreX, double centreY, double centreZ, int resolution) {
     m_resolution = resolution;
+    Vector3d centre(centreX, centreY, centreZ);
     m_surface.clear();
     std::vector<Vector3d> initCurve;
     CircleGen circlemaker;
@@ -61,7 +62,7 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
     double iterCount = solver.minimize(energyFunctional, inputs, energy);
     std::vector<Vector3d> nextCurve;
     for (int i =0; i<m_resolution;i++) {
-        nextCurve[i] = m_surface[curveCount-1][i] + length * normals[i] + inputs[i] * binormals[i];
+        nextCurve.push_back(m_surface[curveCount-1][i] + length * normals[i] + inputs[i] * binormals[i]);
     }
     m_surface.push_back(nextCurve);
 }
