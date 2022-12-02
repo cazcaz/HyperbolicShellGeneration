@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 #include <Eigen/core>
+#include <string>
 
 using Eigen::Vector3d;
 
@@ -10,13 +11,13 @@ class ShellGen {
         ShellGen();
         ~ShellGen();
 
-        void setInitCurve(double radius, Vector3d centre, int resolution);
+        void setInitCurve(double radius, double centreX, double centreY, double centreZ, int resolution);
 
         void expandCurve(double length, double stiffness = 0.05, double lengthCoef = 100);
 
         void expandCurveNTimes(int iterations, double length, double stiffness = 0.05, double lengthCoef = 100);
 
-
+        void printSurface(std::string fileName);
 
     private:
         std::vector<std::vector<Vector3d>> m_surface;

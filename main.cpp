@@ -6,5 +6,6 @@ int main(int, char**) {
     shellGenerator.setInitCurve(1, 0,0,0, 5);
     //shellGenerator.expandCurve(1, 0.05, 100);
     shellGenerator.expandCurveNTimes(5,1, 0.05, 100);
+    shellGenerator.printSurface("testName");
     return 0;
 }

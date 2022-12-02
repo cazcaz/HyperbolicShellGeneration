@@ -2,6 +2,7 @@
 #include "circleGen.h"
 #include <cmath>
 #include <iostream>
+#include <fstream>
 #include "LBFGS.h"
 #include "energyFunction.h"
 
@@ -67,12 +68,30 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
     m_surface.push_back(nextCurve);
 }
 
-
-
 void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef) {
     for (int iteration = 0; iteration < iterations; iteration++){
         expandCurve(length, stiffness, lengthCoef);
     }
-
 }
+
+void ShellGen::printSurface(std::string fileName) {
+    if (m_surface.size() < 2) {
+        //not enough information to make a surface
+        return; 
+    }
+    std::string path = "/../OutputSurfaceTxts/";
+    std::ofstream open(path);
+    std::ofstream surfaceFile("..\\OutputSurfaceTxts\\" + fileName + ".txt");
+
+    for (std::vector<Vector3d> curve : m_surface){
+        for (Vector3d point : curve){
+            surfaceFile << point[0] << ",";
+            surfaceFile << point[1] << ",";
+            surfaceFile << point[2] << " ";
+        }
+        surfaceFile << "\n";
+    }
+    surfaceFile.close();
+}
+
 
