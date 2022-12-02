@@ -1,5 +1,4 @@
 #include "shellGen.h"
-#include "vectorMaths.h"
 #include "circleGen.h"
 #include <cmath>
 #include <iostream>
@@ -21,7 +20,6 @@ void ShellGen::setInitCurve(double radius, Vector3d centre, int resolution) {
 }
 
 void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
-    VectorMaths vMathsHandler;
     int curveCount = m_surface.size();
     if(curveCount == 0) {
         return;
@@ -71,9 +69,9 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
 
 
 void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef) {
-    for (int iteration; iteration < iterations; iteration++){
+    for (int iteration = 0; iteration < iterations; iteration++){
         expandCurve(length, stiffness, lengthCoef);
     }
-    
+
 }
 
