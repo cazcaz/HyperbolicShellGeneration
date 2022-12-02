@@ -58,7 +58,10 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
     EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, length, stiffness, lengthCoef, radialDist, initialDist);
     LBFGSpp::LBFGSParam<double> param;
     LBFGSpp::LBFGSSolver<double> solver(param);
-    VectorXd inputs = VectorXd::Zero(m_resolution);
+    VectorXd randoms = VectorXd::Random(m_resolution);
+    
+    double rangeScale = 0.05;
+    VectorXd inputs =  randoms * rangeScale;
     double energy;
     double iterCount = solver.minimize(energyFunctional, inputs, energy);
     std::vector<Vector3d> nextCurve;
@@ -75,7 +78,8 @@ void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness
 }
 
 void ShellGen::printSurface(std::string fileName) {
-    if (m_surface.size() < 2) {
+    int surfaceLength = m_surface.size();
+    if (surfaceLength < 2) {
         //not enough information to make a surface
         return; 
     }
@@ -83,7 +87,9 @@ void ShellGen::printSurface(std::string fileName) {
     std::ofstream open(path);
     std::ofstream surfaceFile("..\\OutputSurfaceTxts\\" + fileName + ".txt");
 
+    int endCheck = 0;
     for (std::vector<Vector3d> curve : m_surface){
+        endCheck++;
         for (Vector3d point : curve){
             surfaceFile << point[0] << ",";
             surfaceFile << point[1] << ",";
