@@ -2,7 +2,7 @@
 #include "point3D.h"
 #include <memory>
 #include <vector>
-#include <eigen3/Eigen/core>
+#include <Eigen/core>
 
 using Eigen::Vector3d;
 
@@ -16,7 +16,9 @@ class ShellGen {
         void expandCurve(double length, double stiffness = 0.05, double lengthCoef = 100);
 
         void expandCurveNTimes(int iterations, double length, double stiffness = 0.05, double lengthCoef = 100);
-    
+
+        
+
     private:
         std::vector<std::vector<Vector3d>> m_surface;
         int m_resolution;

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "shellGen.h"
-#include <eigen3/Eigen/core>
+#include <Eigen/core>
 
 using Eigen::Vector3d;
 

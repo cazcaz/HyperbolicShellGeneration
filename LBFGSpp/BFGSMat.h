@@ -5,7 +5,7 @@
 #define LBFGSPP_BFGS_MAT_H
 
 #include <vector>
-#include <eigen3/Eigen/Core>
+#include <Eigen/core>
 #include "BKLDLT.h"
 
 /// \cond

@@ -5,7 +5,7 @@
 #define LBFGSPP_LINE_SEARCH_MORE_THUENTE_H
 
 #include <stdexcept>  // std::invalid_argument, std::runtime_error
-#include <eigen3/Eigen/Core>
+#include <Eigen/core>
 #include "Param.h"
 
 namespace LBFGSpp {

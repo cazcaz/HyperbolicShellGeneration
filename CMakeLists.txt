@@ -3,11 +3,16 @@ project(ShellGeneration VERSION 0.1.0)
 
 include_directories(LBFGSpp)
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+find_package(Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
+
 add_library(LibsModule
      point3D.cpp
      vectorMaths.cpp
      circleGen.cpp
      shellGen.cpp
+     energyFunction.cpp
      LBFGS.h
      LBFGSB.h
      LBFGSpp/Param.h

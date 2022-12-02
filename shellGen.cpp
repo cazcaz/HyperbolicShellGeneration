@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include "LBFGS.h"
+#include "energyFunction.h"
 
 using Eigen::Vector3d;
 
@@ -49,12 +50,30 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
             tangents.push_back(nextTangent);
             binormals.push_back(nextBinormal);
     }
-    for (Vector3d point : binormals) {
-        std::cout << point << std::endl;
 
+    double initialDist = m_surface[0][0].norm();
+    double radialDist = initialDist + (curveCount-1) * length;
+
+    //minimsation time
+    EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, length, stiffness, lengthCoef, radialDist, initialDist);
+    LBFGSpp::LBFGSParam<double> param;
+    LBFGSpp::LBFGSSolver<double> solver(param);
+    VectorXd inputs = VectorXd::Zero(m_resolution);
+    double energy;
+    double iterCount = solver.minimize(energyFunctional, inputs, energy);
+    std::vector<Vector3d> nextCurve;
+    for (int i =0; i<m_resolution;i++) {
+        nextCurve[i] = m_surface[curveCount-1][i] + length * normals[i] + inputs[i] * binormals[i];
     }
+    m_surface.push_back(nextCurve);
 }
+
+
 
 void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef) {
-
+    for (int iteration; iteration < iterations; iteration++){
+        expandCurve(length, stiffness, lengthCoef);
+    }
+    
 }
+

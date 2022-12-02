@@ -2,7 +2,7 @@
 
 #include "Point3D.h"
 #include <vector>
-#include <eigen3/Eigen/core>
+#include <Eigen/core>
 
 using  Eigen::Vector3d;
 

@@ -73,8 +73,8 @@ class EnergyFunction:
 
         #sum of all energies
         totalEnergy = stiffness*circumferentialEnergySum + stiffness/(2*length) * radialEnergySum
-        #return totalEnergy
-        return lengthEnergy 
+        return totalEnergy
+        #return lengthEnergy 
     
     def energyFunctionDerivative(self, inputs):
         #the inputs are the displacements to be iterated

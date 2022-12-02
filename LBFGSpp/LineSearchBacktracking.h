@@ -4,7 +4,7 @@
 #ifndef LBFGSPP_LINE_SEARCH_BACKTRACKING_H
 #define LBFGSPP_LINE_SEARCH_BACKTRACKING_H
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/core>
 #include <stdexcept>  // std::runtime_error
 
 namespace LBFGSpp {

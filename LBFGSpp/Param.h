@@ -4,7 +4,7 @@
 #ifndef LBFGSPP_PARAM_H
 #define LBFGSPP_PARAM_H
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/core>
 #include <stdexcept>  // std::invalid_argument
 
 namespace LBFGSpp {
