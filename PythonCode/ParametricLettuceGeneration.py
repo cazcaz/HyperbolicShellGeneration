@@ -352,9 +352,9 @@ class CurveGenerator:
     
 if __name__ == "__main__":
     lettuce = CurveGenerator("Circular")
-    initialCircle = CircleCurveGenerator(100,40,[0,0,0])
+    initialCircle = CircleCurveGenerator(1000,40,[0,0,0])
     lettuce.setInitCurve(initialCircle.getCurve())
-    lettuce.expandCurveNTimes(1000,1,10000,0)
+    lettuce.expandCurveNTimes(100,1,10000,0)
     lettuce.saveAsMesh("LP0")
     
     

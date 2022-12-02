@@ -73,6 +73,7 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
 
 void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef) {
     for (int iteration = 0; iteration < iterations; iteration++){
+        std::cout << iteration << std::endl;
         expandCurve(length, stiffness, lengthCoef);
     }
 }
