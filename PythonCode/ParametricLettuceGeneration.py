@@ -61,7 +61,7 @@ class EnergyFunction:
             
             #bending energy circumferentially
             circumferentialEnergySum +=  1/(self.norm(p1-p2) + self.norm(p3-p2)) * tan(acos(cosAngle))**2
-
+            print(circumferentialEnergySum)
             #arclength of the circumference
             totalLength += self.norm(p2 - p1)
 
@@ -70,11 +70,14 @@ class EnergyFunction:
 
         #difference of total length and desired length squared
         lengthEnergy = lengthPunishment * (totalLength - self.lengthFunction(radialDist, initialRadius))**2
-
+ 
         #sum of all energies
-        totalEnergy = stiffness*circumferentialEnergySum + stiffness/(2*length) * radialEnergySum
+        #totalEnergy = stiffness*circumferentialEnergySum + stiffness/(2*length) * radialEnergySum + lengthEnergy
+        #totalEnergy = stiffness*circumferentialEnergySum
+        #totalEnergy = stiffness/(2*length) * radialEnergySum
+        totalEnergy = lengthEnergy
+
         return totalEnergy
-        #return lengthEnergy 
     
     def energyFunctionDerivative(self, inputs):
         #the inputs are the displacements to be iterated
@@ -336,26 +339,30 @@ class CurveGenerator:
         if len(self.curves) < 1:
             print('Not enough curves initialised.')
             return 0
-        self.expandCurveNTimes(5,1,0,0)
+        #self.expandCurveNTimes(5,1,0,0)
         resolution = len(self.curves[0])
-        curveNormals = [self.normaliseVector(self.curves[-1][i]-self.curves[-2][i]) for i in range(resolution)]
-        tangents= [self.normaliseVector(self.curves[-1][self.ind(i+1)]-self.curves[-1][self.ind(i-1)]) for i in range(resolution)]
-        binormals = [self.normaliseVector(np.cross(curveNormals[i],tangents[i])) for i in range(len(curveNormals))]
-        iterableEnergy = EnergyFunction(self.curves[0], curveNormals, binormals, 1, 7, lengthPunish, stiffness)
+        curveNormals = [self.normaliseVector(self.curves[-1][i]) for i in range(resolution)]
+        #tangents= [self.normaliseVector(self.curves[-1][self.ind(i+1)]-self.curves[-1][self.ind(i-1)]) for i in range(resolution)]
+        binormals = [np.array([0,0,1]) for i in range(len(curveNormals))]
+        iterableEnergy = EnergyFunction(self.curves[0], curveNormals, binormals, 1.5, 2.5, 1, lengthPunish,stiffness)
         h = 0.0000000005
         movedIndex = resolution//2
         testInputMoved = testInput.copy()
         testInputMoved[movedIndex] += h
+        print(iterableEnergy.energyFunction(testInput))
         print((iterableEnergy.energyFunction(testInput) - iterableEnergy.energyFunction(testInputMoved))/h) 
         print(iterableEnergy.energyFunctionDerivative(testInput)[movedIndex])
 
     
 if __name__ == "__main__":
     lettuce = CurveGenerator("Circular")
-    initialCircle = CircleCurveGenerator(1000,40,[0,0,0])
+    initialCircle = CircleCurveGenerator(100,1,[0,0,0])
     lettuce.setInitCurve(initialCircle.getCurve())
-    lettuce.expandCurveNTimes(100,1,10000,0)
-    lettuce.saveAsMesh("LP0")
+    testInput = [0 for i in range(100)]
+    testInput[10] = 0.05
+    lettuce.testEnergyDeriv(testInput, 100, 10)
+    #lettuce.expandCurveNTimes(100,1,10000,0)
+    #lettuce.saveAsMesh("LP0")
     
     
 
