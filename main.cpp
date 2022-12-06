@@ -35,8 +35,10 @@ int main(int, char**) {
     inputs[10] = 0.05;
     inputsChanged[10] = 0.05 + h;
     EnergyFunction energyFunc(prevcurve, normals, binormals, length, 10, 100, 1 + length, 1);
-    std::cout << energyFunc(inputs, derivs) << std::endl;
-    std::cout << (energyFunc(inputs, derivsAfter) - energyFunc(inputsChanged, derivsAfter))/h << std::endl;
+    std::cout << (energyFunc(inputs, derivs) - energyFunc(inputsChanged, derivsAfter))/h << std::endl;
     std::cout << derivs[10] << std::endl;
+    for (int i =0; i < 100; i++) {
+        std::cout << derivsAfter << " ";
+    }
     return 0;
 }

@@ -61,7 +61,7 @@ class EnergyFunction:
             
             #bending energy circumferentially
             circumferentialEnergySum +=  1/(self.norm(p1-p2) + self.norm(p3-p2)) * tan(acos(cosAngle))**2
-            print(circumferentialEnergySum)
+            print(i, circumferentialEnergySum)
             #arclength of the circumference
             totalLength += self.norm(p2 - p1)
 

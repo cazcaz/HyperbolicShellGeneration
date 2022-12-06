@@ -45,18 +45,11 @@ double EnergyFunction::operator()(const VectorXd& inputs, VectorXd& derivatives)
             cosAngle = -1;
         }
         circumferentialEnergySum += 1/((p1-p2).norm() + (p3-p2).norm()) * std::pow(std::tan(std::acos(cosAngle)),2);
-        std::cout << circumferentialEnergySum <<std::endl;
         totalLength += (p2-p1).norm();
         radialEnergySum += std::pow(inputs[i]/m_length,2);
     }
     double lengthEnergy = m_lengthPunishCoef * std::pow(totalLength-lengthFunction(m_radialDist, m_initialDist),2);
     double totalEnergy = m_stiffnessCoef * circumferentialEnergySum + m_stiffnessCoef/(2*m_length) * radialEnergySum + lengthEnergy;
-    
-    
-    //isolated sums for testing
-    //double totalEnergy = m_stiffnessCoef * circumferentialEnergySum;
-    //double totalEnergy = m_stiffnessCoef/(2*m_length) * radialEnergySum;
-    //double totalEnergy = lengthEnergy;
 
     //Now to find all the components
     for (int i=0; i<m_resolution;i++){
@@ -147,7 +140,7 @@ double EnergyFunction::dxDij(double x, double xdij, Vector3d p1, Vector3d p2, Ve
 };
 
 int EnergyFunction::correctIndex(int index){
-    if (index > m_resolution) {
+    if (index >= m_resolution) {
         return correctIndex(index - m_resolution);
     } else if (index < 0) {
         return correctIndex(index + m_resolution);
