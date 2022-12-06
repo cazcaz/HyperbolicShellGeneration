@@ -8,6 +8,8 @@ current = os.getcwd()
 os.chdir("..")
 os.chdir(current + "\\OutputSurfaceTxts")
 for filename in os.listdir(os.getcwd()):
+    if not filename.endswith('.txt'):
+        continue
     fileNames.append(filename[:-4])
     with open(os.path.join(os.getcwd(), filename), 'r') as f:
         currentFile = f.readlines()

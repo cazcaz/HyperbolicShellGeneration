@@ -12,8 +12,8 @@ class EnergyFunction {
         ~EnergyFunction();
 
         double operator()(const VectorXd& inputs, VectorXd& derivatives);
-        VectorXd growthEnergyDerivative(VectorXd& inputs);
         Vector3d normalVecDeriv(Vector3d& a, Vector3d& b, Vector3d& da, Vector3d& db);
+        double normDeriv(Vector3d& a, Vector3d& b, Vector3d& da, Vector3d& db);
         double dxDij(double x, double xdij, Vector3d p1, Vector3d p2, Vector3d p3, Vector3d dp1, Vector3d dp2, Vector3d dp3);
         int correctIndex(int index);
         double lengthFunction(double t, double t0);
