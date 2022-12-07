@@ -9,38 +9,18 @@ using Eigen::Vector3d;
 using Eigen::VectorXd;
 
 int main(int, char**) {
+    double initRadius = 40;
+    int resolution = 100;
+    int expansions = 1000;
+    double extensionLength = 1;
+    double stiffnessCoef = 100;
+    double lengthStiffnessCoef = 1000;
+    double desiredCurvature = 2;
+
     ShellGen shellGenerator;
-    shellGenerator.setInitCurve(40, 0,0,0, 100);
-    shellGenerator.expandCurveNTimes(100, 1, 10, 100);
-    shellGenerator.printSurface("FirstSurfaceWithWorkingEnergy");
-
-    // using this to test the energy function
-
-    // CircleGen circleMaker;
-    // double length = 1.5;
-    // std::vector<Vector3d> prevcurve;
-    // std::vector<Vector3d> normals;
-    // std::vector<Vector3d> binormals;
-    // circleMaker.makeCircle(1, Vector3d(0,0,0), 100, prevcurve);
-    // circleMaker.makeCircle(1, Vector3d(0,0,0), 100, normals);
-    // for (Vector3d point : prevcurve) {
-    //     binormals.push_back(Vector3d(0,0,1));
-    // }
-    // VectorXd inputs = VectorXd::Zero(100);
-    // VectorXd inputsChanged = VectorXd::Zero(100);
-    // VectorXd derivs = VectorXd::Zero(100);
-    // VectorXd derivsAfter = VectorXd::Zero(100);
-    // inputs[9] = 0.1;
-    // inputs[10] = 0.5;
-    // inputs[11] = 0.1;
-    // inputsChanged[9] = 0.1;
-    // inputsChanged[10] = 0.5;
-    // inputsChanged[11] = 0.1;
-    // double h = 0.000000005;
-    // inputsChanged[10] += h;
-    // EnergyFunction energyFunc(prevcurve, normals, binormals, length, 10, 100, 1 + length, 1);
-    // std::cout << energyFunc(inputs, derivs) << std::endl;
-    // std::cout << (energyFunc(inputsChanged, derivsAfter) - energyFunc(inputs, derivs))/h << std::endl;
-    // std::cout << derivs[10] << std::endl;
+    shellGenerator.setInitCurve(initRadius, 0,0,0, resolution);
+    shellGenerator.expandCurveNTimes(expansions, extensionLength, stiffnessCoef, lengthStiffnessCoef, desiredCurvature);
+    std::string autoName = "IR" + std::to_string(initRadius) + " Ex" + std::to_string(expansions) + " ExL" + std::to_string(extensionLength) + " S" + std::to_string(stiffnessCoef) + " LP" + std::to_string(lengthStiffnessCoef)+ " DC" + std::to_string(desiredCurvature);
+    shellGenerator.printSurface(autoName);
     return 0;
 }

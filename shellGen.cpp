@@ -21,7 +21,7 @@ void ShellGen::setInitCurve(double radius, double centreX, double centreY, doubl
     m_surface.push_back(initCurve);
 }
 
-void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
+void ShellGen::expandCurve(double length, double stiffness, double lengthCoef, double desiredCurvature) {
     int curveCount = m_surface.size();
     if(curveCount == 0) {
         return;
@@ -55,11 +55,11 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
     double radialDist = initialDist + (curveCount-1) * length;
 
     //minimsation time
-    EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, length, stiffness, lengthCoef, radialDist, initialDist);
+    EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, length, stiffness, lengthCoef, radialDist, initialDist, desiredCurvature);
     LBFGSpp::LBFGSParam<double> param;
     LBFGSpp::LBFGSSolver<double> solver(param);
-    //VectorXd randoms = VectorXd::Zero(m_resolution);
-    VectorXd randoms = VectorXd::Random(m_resolution);
+    VectorXd randoms = VectorXd::Zero(m_resolution);
+    //VectorXd randoms = VectorXd::Random(m_resolution);
     
     double rangeScale = 0.05;
     VectorXd inputs =  randoms * rangeScale;
@@ -68,20 +68,20 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef) {
 
     std::vector<Vector3d> nextCurve;
     for (int i =0; i<m_resolution;i++) {
-
         nextCurve.push_back(m_surface[curveCount-1][i] + length * normals[i] + inputs[i] * binormals[i]);
     }
     m_surface.push_back(nextCurve);
 }
 
-void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef) {
+void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef, double desiredCurvature) {
     for (int iteration = 0; iteration < iterations; iteration++){
         std::cout << "Curve " << iteration << " found." << std::endl;
         expandCurve(length, stiffness, lengthCoef);
     }
 }
 
-void ShellGen::printSurface(std::string fileName) {
+void ShellGen::printSurface(std::string& fileName) {
+    std::cout << fileName << std::endl;
     int surfaceLength = m_surface.size();
     if (surfaceLength < 2) {
         //not enough information to make a surface
