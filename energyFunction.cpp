@@ -124,7 +124,7 @@ double EnergyFunction::lengthFunction(double t, double t0){
 };
     
 double EnergyFunction::rescaleEnergyFunction(double t, double t0){
-    return 1+heavisideApprox(t-t0) * (M_2_PI*inverseLengthFunction(1e200, t0), lengthFunction(t,t0) - 1);
+    return 1+heavisideApprox(t-t0) * (M_2_PI*inverseLengthFunction(1e200, t0)/lengthFunction(t,t0) - 1);
 };
 
 double EnergyFunction::heavisideApprox(double t){
