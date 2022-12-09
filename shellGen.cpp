@@ -54,7 +54,7 @@ void ShellGen::expandCurve() {
     double radialDist = initialDist + (curveCount-1) * m_parameters.extensionLength;
 
     //minimsation time
-    EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, m_parameters.extensionLength, m_parameters.stiffnessCoef, m_parameters.lengthStiffnessCoef, radialDist, initialDist, m_parameters.desiredCurvature);
+    EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, m_parameters, radialDist);
     LBFGSpp::LBFGSParam<double> param;
     LBFGSpp::LBFGSSolver<double> solver(param);
     //VectorXd randoms = VectorXd::Zero(m_parameters.resolution);

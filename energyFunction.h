@@ -2,13 +2,14 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include "shellParams.h"
 
 using Eigen::Vector3d;
 using Eigen::VectorXd;
 
 class EnergyFunction {
     public:
-        EnergyFunction(std::vector<Vector3d>& currentCurve, std::vector<Vector3d>& normals, std::vector<Vector3d>& binormals, double length, double stiffnessCoef, double lengthPunishCoef, double radialDist, double initialDist, double desiredCurvature);
+        EnergyFunction(std::vector<Vector3d>& currentCurve, std::vector<Vector3d>& normals, std::vector<Vector3d>& binormals, ShellParams& parameters, double radialDist);
         ~EnergyFunction();
 
         double operator()(const VectorXd& inputs, VectorXd& derivatives);
@@ -24,11 +25,6 @@ class EnergyFunction {
         std::vector<Vector3d> m_currentCurve;
         std::vector<Vector3d> m_normals;
         std::vector<Vector3d> m_binormals;
-        double m_length;
-        double m_stiffnessCoef;
-        double m_lengthPunishCoef;
+        ShellParams m_parameters;
         double m_radialDist;
-        double m_initialDist;
-        double m_desiredCurvature;
-        int m_resolution;
 };
