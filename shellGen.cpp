@@ -8,20 +8,19 @@
 
 using Eigen::Vector3d;
 
-ShellGen::ShellGen() : m_resolution(0) {};
+ShellGen::ShellGen(ShellParams& parameters) : m_parameters(parameters) {};
 ShellGen::~ShellGen() {};
 
-void ShellGen::setInitCurve(double radius, double centreX, double centreY, double centreZ, int resolution) {
-    m_resolution = resolution;
-    Vector3d centre(centreX, centreY, centreZ);
+void ShellGen::setInitCurve() {
+    Vector3d centre(m_parameters.centreX, m_parameters.centreY, m_parameters.centreZ);
     m_surface.clear();
     std::vector<Vector3d> initCurve;
     CircleGen circlemaker;
-    circlemaker.makeCircle(radius, centre, resolution, initCurve);
+    circlemaker.makeCircle(m_parameters.initRadius, centre, m_parameters.resolution, initCurve);
     m_surface.push_back(initCurve);
 }
 
-void ShellGen::expandCurve(double length, double stiffness, double lengthCoef, double desiredCurvature) {
+void ShellGen::expandCurve() {
     int curveCount = m_surface.size();
     if(curveCount == 0) {
         return;
@@ -34,15 +33,15 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef, d
             normals.push_back(firstCurvePoint);
         }
     } else {
-        for (int i =0; i<m_resolution;i++){
+        for (int i =0; i<m_parameters.resolution;i++){
             Vector3d nextPoint = m_surface[curveCount-1][i] - m_surface[curveCount-2][i];
             nextPoint.normalize();
             normals.push_back(nextPoint);
         }
     }
     //Nicely behaved tangents
-    double angleChange = 2 * M_PI / m_resolution;
-    for (int i =0; i<m_resolution;i++){
+    double angleChange = 2 * M_PI / m_parameters.resolution;
+    for (int i =0; i<m_parameters.resolution;i++){
             Vector3d nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
             nextTangent.normalize();
             Vector3d nextBinormal(normals[i][1]*nextTangent[2] - normals[i][2]*nextTangent[1] ,normals[i][2]*nextTangent[0] - normals[i][0]*nextTangent[2], normals[i][0]*nextTangent[1] - normals[i][1]*nextTangent[0]);
@@ -52,14 +51,14 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef, d
     }
 
     double initialDist = m_surface[0][0].norm();
-    double radialDist = initialDist + (curveCount-1) * length;
+    double radialDist = initialDist + (curveCount-1) * m_parameters.extensionLength;
 
     //minimsation time
-    EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, length, stiffness, lengthCoef, radialDist, initialDist, desiredCurvature);
+    EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, m_parameters.extensionLength, m_parameters.stiffnessCoef, m_parameters.lengthStiffnessCoef, radialDist, initialDist, m_parameters.desiredCurvature);
     LBFGSpp::LBFGSParam<double> param;
     LBFGSpp::LBFGSSolver<double> solver(param);
-    VectorXd randoms = VectorXd::Zero(m_resolution);
-    //VectorXd randoms = VectorXd::Random(m_resolution);
+    //VectorXd randoms = VectorXd::Zero(m_parameters.resolution);
+    VectorXd randoms = VectorXd::Random(m_parameters.resolution);
     
     double rangeScale = 0.05;
     VectorXd inputs =  randoms * rangeScale;
@@ -67,20 +66,22 @@ void ShellGen::expandCurve(double length, double stiffness, double lengthCoef, d
     double iterCount = solver.minimize(energyFunctional, inputs, energy);
 
     std::vector<Vector3d> nextCurve;
-    for (int i =0; i<m_resolution;i++) {
-        nextCurve.push_back(m_surface[curveCount-1][i] + length * normals[i] + inputs[i] * binormals[i]);
+    for (int i =0; i<m_parameters.resolution;i++) {
+        nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + inputs[i] * binormals[i]);
     }
     m_surface.push_back(nextCurve);
 }
 
-void ShellGen::expandCurveNTimes(int iterations, double length, double stiffness, double lengthCoef, double desiredCurvature) {
+void ShellGen::expandCurveNTimes(int iterations) {
     for (int iteration = 0; iteration < iterations; iteration++){
         std::cout << "Curve " << iteration << " found." << std::endl;
-        expandCurve(length, stiffness, lengthCoef);
+        expandCurve();
     }
 }
 
-void ShellGen::printSurface(std::string& fileName) {
+void ShellGen::printSurface() {
+    ShellName namer;
+    std::string fileName = namer.makeName(m_parameters); 
     std::cout << fileName << std::endl;
     int surfaceLength = m_surface.size();
     if (surfaceLength < 2) {

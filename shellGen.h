@@ -3,23 +3,24 @@
 #include <vector>
 #include <Eigen/core>
 #include <string>
-
+#include "shellParams.h"
+#include "shellNaming.h"
 using Eigen::Vector3d;
 
 class ShellGen {
     public:
-        ShellGen();
+        ShellGen(ShellParams& parameters);
         ~ShellGen();
 
-        void setInitCurve(double radius, double centreX, double centreY, double centreZ, int resolution);
+        void setInitCurve();
 
-        void expandCurve(double length, double stiffness = 0.05, double lengthCoef = 100, double desiredCurvature = 0.01);
+        void expandCurve();
 
-        void expandCurveNTimes(int iterations, double length, double stiffness = 0.05, double lengthCoef = 100, double desiredCurvature = 0.01);
+        void expandCurveNTimes(int iterations);
 
-        void printSurface(std::string& fileName);
+        void printSurface();
 
     private:
+        ShellParams& m_parameters;
         std::vector<std::vector<Vector3d>> m_surface;
-        int m_resolution;
 };
