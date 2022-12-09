@@ -15,7 +15,7 @@ class ShellGen {
 
         void setInitCurve();
 
-        void expandCurve();
+        bool expandCurve();
 
         void expandCurveNTimes(int iterations);
 

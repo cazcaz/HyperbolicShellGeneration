@@ -85,7 +85,7 @@ double EnergyFunction::operator()(const VectorXd& inputs, VectorXd& derivatives)
     //double totalEnergy = m_stiffnessCoef * circumferentialEnergySum;
     //double totalEnergy = m_stiffnessCoef/(2*m_parameters.extensionLength) * radialEnergySum;
     //double totalEnergy = lengthEnergy;
-    std::cout << std::fixed << "Bending Energy: " <<  m_parameters.stiffLengthRatio * circumferentialEnergySum << "  Radial Bending Energy: " << m_parameters.stiffLengthRatio/(2*m_parameters.extensionLength) * radialEnergySum << "  Length Energy: " << lengthEnergy << "  Total Energy: " << totalEnergy << std::endl;
+    //std::cout << std::fixed << "Bending Energy: " <<  m_parameters.stiffLengthRatio * circumferentialEnergySum << "  Radial Bending Energy: " << m_parameters.stiffLengthRatio/(2*m_parameters.extensionLength) * radialEnergySum << "  Length Energy: " << lengthEnergy << "  Total Energy: " << totalEnergy << std::endl;
 
     return totalEnergy;
 };

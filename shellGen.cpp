@@ -20,10 +20,10 @@ void ShellGen::setInitCurve() {
     m_surface.push_back(initCurve);
 }
 
-void ShellGen::expandCurve() {
+bool ShellGen::expandCurve() {
     int curveCount = m_surface.size();
     if(curveCount == 0) {
-        return;
+        return false;
     }
     std::vector<Vector3d> normals;
     std::vector<Vector3d> binormals;
@@ -57,19 +57,14 @@ void ShellGen::expandCurve() {
     EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, m_parameters, radialDist);
     LBFGSpp::LBFGSParam<double> param;
     LBFGSpp::LBFGSSolver<double> solver(param);
-    //VectorXd randoms = VectorXd::Zero(m_parameters.resolution);
-    //VectorXd randoms = VectorXd::Random(m_parameters.resolution);
-    
-    //double rangeScale = 0.05;
-    //VectorXd inputs =  randoms * rangeScale;
     double energy;
-    std::cout << m_prevSol[10] << std::endl;
     int iterCount = solver.minimize(energyFunctional, m_prevSol, energy);
-    std::cout << m_prevSol[10] << std::endl;
-    std::cout << iterCount <<std::endl;
 
     std::vector<Vector3d> nextCurve;
     for (int i =0; i<m_parameters.resolution;i++) {
+        if (std::isnan(m_prevSol[i])){
+            return false;
+        }
         nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + m_prevSol[i] * binormals[i]);
     }
     m_surface.push_back(nextCurve);
@@ -78,7 +73,9 @@ void ShellGen::expandCurve() {
 void ShellGen::expandCurveNTimes(int iterations) {
     for (int iteration = 0; iteration < iterations; iteration++){
         std::cout << "Curve " << iteration << " found." << std::endl;
-        expandCurve();
+        if (!expandCurve()){
+            return;
+        }
     }
 }
 
