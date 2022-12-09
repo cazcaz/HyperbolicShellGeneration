@@ -58,7 +58,11 @@ bool ShellGen::expandCurve() {
     LBFGSpp::LBFGSParam<double> param;
     LBFGSpp::LBFGSSolver<double> solver(param);
     double energy;
-    int iterCount = solver.minimize(energyFunctional, m_prevSol, energy);
+    try {
+        int iterCount = solver.minimize(energyFunctional, m_prevSol, energy);
+    } catch(...) {
+        return false;
+    }
 
     std::vector<Vector3d> nextCurve;
     for (int i =0; i<m_parameters.resolution;i++) {
@@ -68,15 +72,17 @@ bool ShellGen::expandCurve() {
         nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + m_prevSol[i] * binormals[i]);
     }
     m_surface.push_back(nextCurve);
+    return true;
 }
 
 void ShellGen::expandCurveNTimes(int iterations) {
     for (int iteration = 0; iteration < iterations; iteration++){
-        std::cout << "Curve " << iteration << " found." << std::endl;
         if (!expandCurve()){
+            std::cout << "Failed on curve " << iteration + 1 << std::endl;
             return;
         }
     }
+    std::cout << "Success." << std::endl;
 }
 
 void ShellGen::printSurface() {
