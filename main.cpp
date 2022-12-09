@@ -4,12 +4,13 @@
 int main(int, char**) {
     
     ShellParams parameters;
-    parameters.extensionLength = 0.01;
-    parameters.lengthStiffnessCoef = 100000;
+    parameters.extensionLength = 0.5;
+    parameters.stiffLengthRatio = 1000;
+    parameters.desiredCurvature = 0.00001;
 
     ShellGen shellGenerator(parameters);
     shellGenerator.setInitCurve();
-    shellGenerator.expandCurveNTimes(1000);
+    shellGenerator.expandCurveNTimes(100);
     shellGenerator.printSurface();
     return 0;
 }

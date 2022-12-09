@@ -12,8 +12,7 @@ class ShellParams {
     int resolution = 100;
     int expansions = 1000;
     double extensionLength = 1;
-    double stiffnessCoef = 100;
-    double lengthStiffnessCoef = 1000;
+    double stiffLengthRatio = 1;
     double desiredCurvature = 2;
     private:
 

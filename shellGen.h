@@ -6,6 +6,7 @@
 #include "shellParams.h"
 #include "shellNaming.h"
 using Eigen::Vector3d;
+using Eigen::VectorXd;
 
 class ShellGen {
     public:
@@ -23,4 +24,5 @@ class ShellGen {
     private:
         ShellParams& m_parameters;
         std::vector<std::vector<Vector3d>> m_surface;
+        VectorXd m_prevSol;
 };

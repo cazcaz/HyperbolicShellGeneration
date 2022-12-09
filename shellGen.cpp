@@ -8,7 +8,7 @@
 
 using Eigen::Vector3d;
 
-ShellGen::ShellGen(ShellParams& parameters) : m_parameters(parameters) {};
+ShellGen::ShellGen(ShellParams& parameters) : m_parameters(parameters) , m_prevSol(0.05 * VectorXd::Random(parameters.resolution)) {};
 ShellGen::~ShellGen() {};
 
 void ShellGen::setInitCurve() {
@@ -58,16 +58,19 @@ void ShellGen::expandCurve() {
     LBFGSpp::LBFGSParam<double> param;
     LBFGSpp::LBFGSSolver<double> solver(param);
     //VectorXd randoms = VectorXd::Zero(m_parameters.resolution);
-    VectorXd randoms = VectorXd::Random(m_parameters.resolution);
+    //VectorXd randoms = VectorXd::Random(m_parameters.resolution);
     
-    double rangeScale = 0.05;
-    VectorXd inputs =  randoms * rangeScale;
+    //double rangeScale = 0.05;
+    //VectorXd inputs =  randoms * rangeScale;
     double energy;
-    double iterCount = solver.minimize(energyFunctional, inputs, energy);
+    std::cout << m_prevSol[10] << std::endl;
+    int iterCount = solver.minimize(energyFunctional, m_prevSol, energy);
+    std::cout << m_prevSol[10] << std::endl;
+    std::cout << iterCount <<std::endl;
 
     std::vector<Vector3d> nextCurve;
     for (int i =0; i<m_parameters.resolution;i++) {
-        nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + inputs[i] * binormals[i]);
+        nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + m_prevSol[i] * binormals[i]);
     }
     m_surface.push_back(nextCurve);
 }
