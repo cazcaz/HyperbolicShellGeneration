@@ -4,11 +4,10 @@
 int main(int, char**) {
     
     ShellParams parameters;
-    parameters.resolution = 500;
-    parameters.initRadius = 60;
-    parameters.extensionLength = 1;
+    parameters.resolution = 100;
+    parameters.extensionLength = 0.01;
     parameters.stiffLengthRatio = 1;
-    parameters.desiredCurvature = 0.000001;
+    parameters.desiredCurvature = 0.001;
     ShellGen shellGenerator(parameters);
 
     for (int j = 1; j <= 10; j++){
@@ -16,10 +15,9 @@ int main(int, char**) {
         for (int i = 1; i <= 10; i++){
             parameters.stiffLengthRatio *= 10;
             shellGenerator.setInitCurve();
-            shellGenerator.expandCurveNTimes(1000);
+            shellGenerator.expandCurveNTimes(100);
             shellGenerator.printSurface();
         }
     }
-    
     return 0;
 }

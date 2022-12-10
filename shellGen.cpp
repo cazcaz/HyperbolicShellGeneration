@@ -16,7 +16,7 @@ void ShellGen::setInitCurve() {
     m_surface.clear();
     std::vector<Vector3d> initCurve;
     CircleGen circlemaker;
-    circlemaker.makeCircle(m_parameters.initRadius, centre, m_parameters.resolution, initCurve);
+    circlemaker.makeCircle(1, centre, m_parameters.resolution, initCurve);
     m_surface.push_back(initCurve);
 }
 
@@ -50,8 +50,8 @@ bool ShellGen::expandCurve() {
             binormals.push_back(nextBinormal);
     }
 
-    double initialDist = m_surface[0][0].norm();
-    double radialDist = initialDist + (curveCount-1) * m_parameters.extensionLength;
+    double initialDist = 1;
+    double radialDist = 1 + (curveCount-1) * m_parameters.extensionLength;
 
     //minimsation time
     EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, m_parameters, radialDist);

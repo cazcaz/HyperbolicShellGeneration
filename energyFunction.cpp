@@ -21,7 +21,7 @@ EnergyFunction::~EnergyFunction() = default;
 
 double EnergyFunction::operator()(const VectorXd& inputs, VectorXd& derivatives){
     std::vector<Vector3d> nextCurve;
-    double scalingTerm = rescaleEnergyFunction(m_radialDist, m_parameters.initRadius);
+    double scalingTerm = rescaleEnergyFunction(m_radialDist, 1);
     for (int i=0; i<m_parameters.resolution; i++) {
         nextCurve.push_back(m_currentCurve[i] + m_parameters.extensionLength*m_normals[i] + inputs[i]*m_binormals[i]);
     }
@@ -67,7 +67,7 @@ double EnergyFunction::operator()(const VectorXd& inputs, VectorXd& derivatives)
         double xdij3 = (p3-p2).normalized().dot(normalVecDeriv(p1,p2,dp1,dp2)) + (p1-p2).normalized().dot(normalVecDeriv(p3,p2,dp3,dp2));
 
         double energyBendDeriv = scalingTerm*(dxDij(x1, xdij1, p3,p4,p5,dp3,dp4,dp5) + dxDij(x2, xdij2,p2,p3,p4,dp2,dp3,dp4) + dxDij(x3, xdij3, p1,p2,p3,dp1,dp2,dp3));
-        double lengthEnergyDeriv = scalingTerm*(2 * (totalLength - lengthFunction(m_radialDist, m_parameters.initRadius)) * ((dp4-dp3).dot((p4-p3).normalized()) + (dp3-dp2).dot((p3-p2).normalized())));
+        double lengthEnergyDeriv = scalingTerm*(2 * (totalLength - lengthFunction(m_radialDist, 1)) * ((dp4-dp3).dot((p4-p3).normalized()) + (dp3-dp2).dot((p3-p2).normalized())));
         double energyRadialBendDeriv = scalingTerm*(m_parameters.stiffLengthRatio/std::pow(m_parameters.extensionLength,3) * inputs[i]);
         derivatives[i] = energyBendDeriv + energyRadialBendDeriv + lengthEnergyDeriv;
         
@@ -77,7 +77,7 @@ double EnergyFunction::operator()(const VectorXd& inputs, VectorXd& derivatives)
         //derivatives[i] = lengthEnergyDeriv;
     }
 
-    double lengthEnergy = scalingTerm * std::pow(totalLength-lengthFunction(m_radialDist, m_parameters.initRadius),2);
+    double lengthEnergy = scalingTerm * std::pow(totalLength-lengthFunction(m_radialDist, 1),2);
     double totalEnergy = m_parameters.stiffLengthRatio * circumferentialEnergySum + m_parameters.stiffLengthRatio/(2*m_parameters.extensionLength) * radialEnergySum + lengthEnergy;
     
     //Isolated energy derivatives for testing
@@ -85,7 +85,7 @@ double EnergyFunction::operator()(const VectorXd& inputs, VectorXd& derivatives)
     //double totalEnergy = m_stiffnessCoef * circumferentialEnergySum;
     //double totalEnergy = m_stiffnessCoef/(2*m_parameters.extensionLength) * radialEnergySum;
     //double totalEnergy = lengthEnergy;
-    std::cout << std::fixed << "Bending Energy: " <<  m_parameters.stiffLengthRatio * circumferentialEnergySum << "  Radial Bending Energy: " << m_parameters.stiffLengthRatio/(2*m_parameters.extensionLength) * radialEnergySum << "  Length Energy: " << lengthEnergy << "  Total Energy: " << totalEnergy << std::endl;
+    //std::cout << std::fixed << "Bending Energy: " <<  m_parameters.stiffLengthRatio * circumferentialEnergySum << "  Radial Bending Energy: " << m_parameters.stiffLengthRatio/(2*m_parameters.extensionLength) * radialEnergySum << "  Length Energy: " << lengthEnergy << "  Total Energy: " << totalEnergy << std::endl;
 
     return totalEnergy;
 };
@@ -124,7 +124,7 @@ double EnergyFunction::lengthFunction(double t, double t0){
 };
     
 double EnergyFunction::rescaleEnergyFunction(double t, double t0){
-    return 1+heavisideApprox(t-t0) * (M_2_PI*inverseLengthFunction(1, t0)/lengthFunction(t,t0) - 1);
+    return 1/(std::pow(m_parameters.resolution,2) *lengthFunction(t,t0));
 };
 
 double EnergyFunction::heavisideApprox(double t){
