@@ -61,12 +61,14 @@ bool ShellGen::expandCurve() {
     try {
         int iterCount = solver.minimize(energyFunctional, m_prevSol, energy);
     } catch(...) {
+        std::cout << "Failed from error in calcualtion." << std::endl;
         return false;
     }
 
     std::vector<Vector3d> nextCurve;
     for (int i =0; i<m_parameters.resolution;i++) {
         if (std::isnan(m_prevSol[i])){
+            std::cout << "Failed from nan input." << std::endl;
             return false;
         }
         nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + m_prevSol[i] * binormals[i]);
@@ -77,6 +79,7 @@ bool ShellGen::expandCurve() {
 
 void ShellGen::expandCurveNTimes(int iterations) {
     for (int iteration = 0; iteration < iterations; iteration++){
+        std::cout << "Curve " << iteration + 1 << std::endl;
         if (!expandCurve()){
             std::cout << "Failed on curve " << iteration + 1 << std::endl;
             return;

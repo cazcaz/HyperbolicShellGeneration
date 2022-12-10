@@ -11,7 +11,7 @@ add_library(LibsModule
      circleGen.cpp
      shellGen.cpp
      energyFunction.cpp
-     shellParams.cpp
+     shellParams.h
      shellNaming.cpp
      LBFGS.h
      LBFGSB.h

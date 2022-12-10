@@ -25,6 +25,6 @@ class EnergyFunction {
         std::vector<Vector3d> m_currentCurve;
         std::vector<Vector3d> m_normals;
         std::vector<Vector3d> m_binormals;
-        ShellParams m_parameters;
+        struct ShellParams& m_parameters;
         double m_radialDist;
 };

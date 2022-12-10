@@ -22,7 +22,7 @@ class ShellGen {
         void printSurface();
 
     private:
-        ShellParams& m_parameters;
+        struct ShellParams& m_parameters;
         std::vector<std::vector<Vector3d>> m_surface;
         VectorXd m_prevSol;
 };
