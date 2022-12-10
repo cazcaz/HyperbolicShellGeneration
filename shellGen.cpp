@@ -56,10 +56,15 @@ bool ShellGen::expandCurve() {
     //minimsation time
     EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, m_parameters, radialDist);
     LBFGSpp::LBFGSParam<double> param;
+    param.max_iterations = 100;
     LBFGSpp::LBFGSSolver<double> solver(param);
     double energy;
     try {
         int iterCount = solver.minimize(energyFunctional, m_prevSol, energy);
+        if (iterCount == 100) {
+            std::cout << "Failed from max iterations." << std::endl;
+            return false;
+        }
     } catch(...) {
         std::cout << "Failed from error in calcualtion." << std::endl;
         return false;
@@ -78,11 +83,20 @@ bool ShellGen::expandCurve() {
 }
 
 void ShellGen::expandCurveNTimes(int iterations) {
-    for (int iteration = 0; iteration < iterations; iteration++){
-        std::cout << "Curve " << iteration + 1 << std::endl;
-        if (!expandCurve()){
-            std::cout << "Failed on curve " << iteration + 1 << std::endl;
-            return;
+    if (iterations == 0) {
+        int k = 0;
+        //set a max to stop it getting ridiculous
+        while (expandCurve() && k < 4000) {
+            k++;
+        }
+        std::cout << k << " curves found before failure." <<std::endl;
+        return;
+    } else {
+        for (int iteration = 0; iteration < iterations; iteration++){
+            if (!expandCurve()){
+                std::cout << "Failed on curve " << iteration + 1 << std::endl;
+                return;
+            }
         }
     }
     std::cout << "Success." << std::endl;
