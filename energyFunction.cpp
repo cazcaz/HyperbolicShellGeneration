@@ -23,7 +23,7 @@ double EnergyFunction::operator()(const VectorXd& inputs, VectorXd& derivatives)
     std::vector<Vector3d> nextCurve;
     double scalingTerm = rescaleEnergyFunction(m_radialDist, 1);
     for (int i=0; i<m_parameters.resolution; i++) {
-        nextCurve.push_back(m_currentCurve[i] + m_parameters.extensionLength*m_normals[i] + inputs[i]*m_binormals[i]);
+        nextCurve.push_back(m_currentCurve[i] + m_parameters.extensionLength*m_normals[i] + m_parameters.extensionLength* inputs[i]*m_binormals[i]);
     }
     double circumferentialEnergySum = 0;
     double totalLength = 0;

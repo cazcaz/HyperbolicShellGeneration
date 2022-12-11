@@ -56,14 +56,13 @@ bool ShellGen::expandCurve() {
     //minimsation time
     EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, m_parameters, radialDist);
     LBFGSpp::LBFGSParam<double> param;
-    param.max_iterations = 100;
+    param.max_iterations = 200;
     LBFGSpp::LBFGSSolver<double> solver(param);
     double energy;
     try {
         int iterCount = solver.minimize(energyFunctional, m_prevSol, energy);
-        if (iterCount == 100) {
-            std::cout << "Failed from max iterations." << std::endl;
-            return false;
+        if (iterCount == 200) {
+            std::cout << "Max iterations reached, continuing." << std::endl;
         }
     } catch(...) {
         std::cout << "Failed from error in calcualtion." << std::endl;
@@ -76,7 +75,7 @@ bool ShellGen::expandCurve() {
             std::cout << "Failed from nan input." << std::endl;
             return false;
         }
-        nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + m_prevSol[i] * binormals[i]);
+        nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + m_parameters.extensionLength* m_prevSol[i] * binormals[i]);
     }
     m_surface.push_back(nextCurve);
     return true;
