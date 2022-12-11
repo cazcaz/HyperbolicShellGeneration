@@ -1,24 +1,26 @@
-#include "shellGen.h"
-#include "shellParams.h"
+#include "batchGen.h"
 
 int main(int, char**) {
-    
-    ShellParams parameters;
-    parameters.resolution = 500;
-    parameters.extensionLength = 0.1;
-    parameters.stiffLengthRatio = 0.00001;
-    parameters.desiredCurvature = 0.00001;
-    ShellGen shellGenerator(parameters);
+    double stiffLength = 0.00001;
+    double DC = 0.00001;
 
-    for (int j = 1; j <= 10; j++){
-        parameters.stiffLengthRatio = 0.00001;
-        parameters.desiredCurvature *= 10;
-        for (int i = 1; i <= 10; i++){
-            parameters.stiffLengthRatio *= 10;
-            shellGenerator.setInitCurve();
-            shellGenerator.expandCurveNTimes(100);
-            shellGenerator.printSurface();
+    std::vector<ShellParams> parameterList;
+    BatchGen massCalcer(100);
+
+    for (int i=0; i<5;i++){
+        stiffLength = 0.00001;
+        DC *= 10;
+        for (int j=0; j<10;j++){
+            stiffLength *= 10;
+            ShellParams parameters;
+            parameters.resolution = 500;
+            parameters.extensionLength = 0.1;
+            parameters.stiffLengthRatio = 0.00001;
+            parameters.desiredCurvature = DC;
+            parameters.stiffLengthRatio = stiffLength;
+            parameterList.push_back(parameters);
         }
     }
+    massCalcer.calculateAll(parameterList);
     return 0;
 }

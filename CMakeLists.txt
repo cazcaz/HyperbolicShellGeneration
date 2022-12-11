@@ -13,6 +13,7 @@ add_library(LibsModule
      energyFunction.cpp
      shellParams.h
      shellNaming.cpp
+     batchGen.cpp
      LBFGS.h
      LBFGSB.h
      LBFGSpp/Param.h
