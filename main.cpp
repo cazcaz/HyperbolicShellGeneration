@@ -1,26 +1,34 @@
 #include "batchGen.h"
 
 int main(int, char**) {
-    double stiffLength = 0.00001;
-    double DC = 0.00001;
+    double stiffLengthStart = 0.00001;
+    double DCStart = 0.00001;
+    double stiffLengthEnd = 0.01;
+    double DCEnd = 0.01;
+    int parameterSpaceResolution = 49;
 
     std::vector<ShellParams> parameterList;
-    BatchGen massCalcer(100);
+    BatchGen massCalcer(2000);
 
-    for (int i=0; i<5;i++){
-        stiffLength = 0.00001;
-        DC *= 10;
-        for (int j=0; j<10;j++){
-            stiffLength *= 10;
+    std::vector<double> stiffLengths;
+    std::vector<double> DCs;
+    for (int i=0; i<=parameterSpaceResolution; i++){
+        stiffLengths.push_back((stiffLengthEnd-stiffLengthStart)/parameterSpaceResolution * i + stiffLengthStart);
+        DCs.push_back((DCEnd-DCStart)/parameterSpaceResolution * i + DCStart);
+    }
+
+    for (double stiff : stiffLengths){
+        for (double DC : DCs) {
             ShellParams parameters;
             parameters.resolution = 500;
             parameters.extensionLength = 0.1;
             parameters.stiffLengthRatio = 0.00001;
             parameters.desiredCurvature = DC;
-            parameters.stiffLengthRatio = stiffLength;
+            parameters.stiffLengthRatio = stiff;
             parameterList.push_back(parameters);
         }
     }
+
     massCalcer.calculateAll(parameterList);
     return 0;
 }

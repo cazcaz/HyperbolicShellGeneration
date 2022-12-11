@@ -38,16 +38,16 @@ void BatchGen::calculateBatch(std::vector<ShellParams> parameterList)
     int threadsNeeded = parameterList.size();
     std::vector<std::thread> threads(threadsNeeded);
     for (int i = 0; i < threadsNeeded; i++) {
-        threads[i] = std::thread(&BatchGen::OnThreadShellGen, this,parameterList[i], m_expansionCount);
+        threads[i] = std::thread(&BatchGen::OnThreadShellGen, this,parameterList[i]);
     }
     for (auto& th : threads) {
         th.join();
     }
 }
 
-void BatchGen::OnThreadShellGen(ShellParams parameters, int expansionCount){
+void BatchGen::OnThreadShellGen(ShellParams parameters){
     ShellGen shellGenerator(parameters);
     shellGenerator.setInitCurve();
-    shellGenerator.expandCurveNTimes(expansionCount);
+    shellGenerator.expandCurveNTimes(m_expansionCount);
     shellGenerator.printSurface();
 }

@@ -9,10 +9,9 @@ class BatchGen {
     public:
         BatchGen(int expansionCount);
         ~BatchGen();
-
         void calculateAll(std::vector<ShellParams> parameterList);
         void calculateBatch(std::vector<ShellParams> parameterList);
-        void OnThreadShellGen(ShellParams parameters, int expansionCount);
+        void OnThreadShellGen(ShellParams parameters);
     private:
         unsigned int m_threadCount;
         int m_expansionCount;
