@@ -1,6 +1,6 @@
 #include "batchGen.h"
 
-BatchGen::BatchGen(int expansionCount) : m_expansionCount(expansionCount)
+BatchGen::BatchGen()
 {
     m_threadCount = std::thread::hardware_concurrency();
 }
@@ -48,6 +48,6 @@ void BatchGen::calculateBatch(std::vector<ShellParams> parameterList)
 void BatchGen::OnThreadShellGen(ShellParams parameters){
     ShellGen shellGenerator(parameters);
     shellGenerator.setInitCurve();
-    shellGenerator.expandCurveNTimes(m_expansionCount);
+    shellGenerator.expandCurveNTimes();
     shellGenerator.printSurface();
 }

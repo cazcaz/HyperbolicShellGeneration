@@ -82,8 +82,8 @@ bool ShellGen::expandCurve() {
     return true;
 }
 
-void ShellGen::expandCurveNTimes(int iterations) {
-    if (iterations == 0) {
+void ShellGen::expandCurveNTimes() {
+    if (m_parameters.expansions == 0) {
         int k = 0;
         //set a max to stop it getting ridiculous
         while (expandCurve() && k < 4000) {
@@ -92,7 +92,7 @@ void ShellGen::expandCurveNTimes(int iterations) {
         std::cout << k << " curves found before failure." <<std::endl;
         return;
     } else {
-        for (int iteration = 0; iteration < iterations; iteration++){
+        for (int iteration = 0; iteration < m_parameters.expansions; iteration++){
             if (!expandCurve()){
                 std::cout << "Failed on curve " << iteration + 1 << std::endl;
                 return;
