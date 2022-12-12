@@ -53,18 +53,18 @@ double EnergyFunction::operator()(const VectorXd& inputs, VectorXd& derivatives)
         Vector3d dp5 = Vector3d::Zero(3);
 
         //Cosines of the angles between the rods connecting all 5 points
-        double x1 = (p5-p4).normalized().dot((p3-p4).normalized());
-        double x2 = (p4-p3).normalized().dot((p2-p3).normalized());
-        double x3 = (p3-p2).normalized().dot((p1-p2).normalized());
+        double x1 = (M_PI - (p5-p4).normalized().dot((p3-p4).normalized()))/2;
+        double x2 = (M_PI - (p4-p3).normalized().dot((p2-p3).normalized()))/2;
+        double x3 = (M_PI - (p3-p2).normalized().dot((p1-p2).normalized()))/2;
 
         //Energy calcs. 
         circumferentialEnergySum += scalingTerm*(1/((p2-p3).norm() + (p4-p3).norm()) * std::pow(std::tan(std::acos(x2)),2));
         radialEnergySum += scalingTerm*(std::pow(inputs[i]/m_parameters.extensionLength,2));
 
         //Derivative calculations
-        double xdij1 = (p5-p4).normalized().dot(normalVecDeriv(p3,p4,dp3,dp4)) + (p3-p4).normalized().dot(normalVecDeriv(p5,p4,dp5,dp4));
-        double xdij2 = (p4-p3).normalized().dot(normalVecDeriv(p2,p3,dp2,dp3)) + (p2-p3).normalized().dot(normalVecDeriv(p4,p3,dp4,dp3));
-        double xdij3 = (p3-p2).normalized().dot(normalVecDeriv(p1,p2,dp1,dp2)) + (p1-p2).normalized().dot(normalVecDeriv(p3,p2,dp3,dp2));
+        double xdij1 = -1/2 * ((p5-p4).normalized().dot(normalVecDeriv(p3,p4,dp3,dp4)) + (p3-p4).normalized().dot(normalVecDeriv(p5,p4,dp5,dp4)));
+        double xdij2 = -1/2 * ((p4-p3).normalized().dot(normalVecDeriv(p2,p3,dp2,dp3)) + (p2-p3).normalized().dot(normalVecDeriv(p4,p3,dp4,dp3)));
+        double xdij3 = -1/2 * ((p3-p2).normalized().dot(normalVecDeriv(p1,p2,dp1,dp2)) + (p1-p2).normalized().dot(normalVecDeriv(p3,p2,dp3,dp2)));
 
         double energyBendDeriv = scalingTerm*(dxDij(x1, xdij1, p3,p4,p5,dp3,dp4,dp5) + dxDij(x2, xdij2,p2,p3,p4,dp2,dp3,dp4) + dxDij(x3, xdij3, p1,p2,p3,dp1,dp2,dp3));
         double lengthEnergyDeriv = scalingTerm*(2 * (totalLength - lengthFunction(m_radialDist, 1)) * ((dp4-dp3).dot((p4-p3).normalized()) + (dp3-dp2).dot((p3-p2).normalized())));
@@ -85,7 +85,7 @@ double EnergyFunction::operator()(const VectorXd& inputs, VectorXd& derivatives)
     //double totalEnergy = m_stiffnessCoef * circumferentialEnergySum;
     //double totalEnergy = m_stiffnessCoef/(2*m_parameters.extensionLength) * radialEnergySum;
     //double totalEnergy = lengthEnergy;
-    //std::cout << std::fixed << "Bending Energy: " <<  m_parameters.stiffLengthRatio * circumferentialEnergySum << "  Radial Bending Energy: " << m_parameters.stiffLengthRatio/(2*m_parameters.extensionLength) * radialEnergySum << "  Length Energy: " << lengthEnergy << "  Total Energy: " << totalEnergy << std::endl;
+    std::cout << std::fixed << "Bending Energy: " <<  m_parameters.stiffLengthRatio * circumferentialEnergySum << "  Radial Bending Energy: " << m_parameters.stiffLengthRatio/(2*m_parameters.extensionLength) * radialEnergySum << "  Length Energy: " << lengthEnergy << "  Total Energy: " << totalEnergy << std::endl;
 
     return totalEnergy;
 };
