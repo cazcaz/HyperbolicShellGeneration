@@ -62,17 +62,17 @@ bool ShellGen::expandCurve() {
     try {
         int iterCount = solver.minimize(energyFunctional, m_prevSol, energy);
         if (iterCount == 200) {
-            std::cout << "Max iterations reached, continuing." << std::endl;
+            //std::cout << "Max iterations reached, continuing." << std::endl;
         }
     } catch(...) {
-        std::cout << "Failed from error in calcualtion." << std::endl;
+        //std::cout << "Failed from error in calcualtion." << std::endl;
         return false;
     }
 
     std::vector<Vector3d> nextCurve;
     for (int i =0; i<m_parameters.resolution;i++) {
         if (std::isnan(m_prevSol[i])){
-            std::cout << "Failed from nan input." << std::endl;
+            //std::cout << "Failed from nan input." << std::endl;
             return false;
         }
         nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + m_parameters.extensionLength* m_prevSol[i] * binormals[i]);
@@ -88,23 +88,19 @@ void ShellGen::expandCurveNTimes() {
         while (expandCurve() && k < 4000) {
             k++;
         }
-        std::cout << k << " curves found before failure." <<std::endl;
         return;
     } else {
         for (int iteration = 0; iteration < m_parameters.expansions; iteration++){
             if (!expandCurve()){
-                std::cout << "Failed on curve " << iteration + 1 << std::endl;
                 return;
             }
         }
     }
-    std::cout << "Success." << std::endl;
 }
 
 void ShellGen::printSurface() {
     ShellName namer;
-    std::string fileName = namer.makeName(m_parameters); 
-    std::cout << fileName << std::endl;
+    std::string fileName = namer.makeName(m_parameters);
     int surfaceLength = m_surface.size();
     if (surfaceLength < 2) {
         //not enough information to make a surface

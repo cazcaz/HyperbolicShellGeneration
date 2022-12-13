@@ -10,6 +10,6 @@ ShellName::~ShellName()
 
 std::string ShellName::makeName(ShellParams &parameters)
 {   
-    std::string name = "Ex" + std::to_string(parameters.expansions) + " ExL" + std::to_string(parameters.extensionLength) + " SLR" + std::to_string(parameters.stiffLengthRatio) + " DC" + std::to_string(parameters.desiredCurvature);
+    std::string name = "Ex" + std::to_string(parameters.expansions) + " ExL" + std::to_string(parameters.extensionLength) + " SLRC" + std::to_string(parameters.stiffLengthRatioCircum) + " SLRR" + std::to_string(parameters.stiffLengthRatioRadial) + " DC" + std::to_string(parameters.desiredCurvature);
     return name;
 }

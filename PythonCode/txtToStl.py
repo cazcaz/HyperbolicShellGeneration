@@ -5,6 +5,7 @@ import numpy as np
 surfaces = []
 fileNames = []
 current = os.getcwd()
+count = 0
 os.chdir("..")
 os.chdir(current + "\\OutputSurfaceTxts")
 for filename in os.listdir(os.getcwd()):
@@ -28,6 +29,7 @@ os.chdir("..")
 current = os.getcwd()
 os.chdir(current + "\\OutputSurfaceMeshes")
 for surface, fileName in zip(surfaces, fileNames):
+    count += 1
     resolution = len(surface[0])
     listVertices = []
     for curve in surface:
@@ -49,3 +51,4 @@ for surface, fileName in zip(surfaces, fileNames):
             lettuceMesh.vectors[i][j] = vertices[f[j],:]
     lettuceMesh.save(fileName + '.stl')
 
+print("Done, " , count , " surfaces converted.")

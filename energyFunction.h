@@ -21,6 +21,8 @@ class EnergyFunction {
         double rescaleEnergyFunction(double t, double t0);
         double heavisideApprox(double t);
         double inverseLengthFunction(double t, double t0);
+        double bendingEnergy(Vector3d a, Vector3d b, Vector3d c);
+        double bendingEnergyDeriv(Vector3d a, Vector3d b, Vector3d c, Vector3d da, Vector3d db, Vector3d dc);
     private:
         std::vector<Vector3d> m_currentCurve;
         std::vector<Vector3d> m_normals;
