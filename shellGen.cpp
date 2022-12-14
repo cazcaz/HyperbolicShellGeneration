@@ -42,7 +42,8 @@ bool ShellGen::expandCurve() {
     //Nicely behaved tangents
     double angleChange = 2 * M_PI / m_parameters.resolution;
     for (int i =0; i<m_parameters.resolution;i++){
-            Vector3d nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
+            //Vector3d nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
+            Vector3d nextTangent = m_surface[curveCount-1][correctIndex(i+1)] - m_surface[curveCount-1][correctIndex(i-1)];
             nextTangent.normalize();
             Vector3d nextBinormal(normals[i][1]*nextTangent[2] - normals[i][2]*nextTangent[1] ,normals[i][2]*nextTangent[0] - normals[i][0]*nextTangent[2], normals[i][0]*nextTangent[1] - normals[i][1]*nextTangent[0]);
             //nextBinormal.normalize();
@@ -97,6 +98,15 @@ void ShellGen::expandCurveNTimes() {
         }
     }
 }
+
+int ShellGen::correctIndex(int index){
+    if (index >= m_parameters.resolution) {
+        return correctIndex(index - m_parameters.resolution);
+    } else if (index < 0) {
+        return correctIndex(index + m_parameters.resolution);
+    }
+    return index;
+};
 
 void ShellGen::printSurface() {
     ShellName namer;

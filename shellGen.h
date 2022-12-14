@@ -19,6 +19,8 @@ class ShellGen {
 
         void expandCurveNTimes();
 
+        int correctIndex(int index);
+
         void printSurface();
 
     private:
