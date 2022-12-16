@@ -1,6 +1,6 @@
 #include "batchGen.h"
 
-BatchGen::BatchGen()
+BatchGen::BatchGen() : m_surfaceCount(0)
 {
     m_threadCount = std::thread::hardware_concurrency();
 }
@@ -10,7 +10,8 @@ BatchGen::~BatchGen()
 }
 
 void BatchGen::calculateAll(std::vector<ShellParams> parameterList)
-{   
+{      
+    m_totalSurfaceCount = parameterList.size();
     if (m_threadCount == 0) {
         std::cout << "Failed, no threads found." << std::endl;
         return;
@@ -30,8 +31,8 @@ void BatchGen::calculateAll(std::vector<ShellParams> parameterList)
     
     int barWidth = 70;
     float progress = 0.0;
-    float progressJump = 1.0/parameterList.size();
     for (std::vector<ShellParams> list : splitChunks) {
+        progress = float(m_surfaceCount)/float(m_totalSurfaceCount);
         std::cout << "[";
         int pos = barWidth * progress;
         for (int i = 0; i < barWidth; ++i) {
@@ -39,21 +40,12 @@ void BatchGen::calculateAll(std::vector<ShellParams> parameterList)
             else if (i == pos) std::cout << ">";
             else std::cout << " ";
         }
-        std::cout << "] " << int(progress * 100.0) << " %\r";
+        std::cout << "] " << int(progress * 100.0) << " % " << m_surfaceCount << "/" << m_totalSurfaceCount << "\r";
         std::cout.flush();
+        std::cout << std::endl;   
         calculateBatch(list);
-        progress += list.size()*progressJump; // for demonstration only
-    }
-    std::cout << "[";
-        int pos = barWidth * progress;
-        for (int i = 0; i < barWidth; ++i) {
-            if (i < pos) std::cout << "=";
-            else if (i == pos) std::cout << ">";
-            else std::cout << " ";
-        }
-    std::cout << "] " << int(progress * 100.0) << " %\r";
-    std::cout.flush();
-    std::cout << std::endl;    
+        m_surfaceCount += list.size();
+    } 
 }
 
 void BatchGen::calculateBatch(std::vector<ShellParams> parameterList)

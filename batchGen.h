@@ -15,4 +15,6 @@ class BatchGen {
         void OnThreadShellGen(ShellParams parameters);
     private:
         unsigned int m_threadCount;
+        int m_surfaceCount;
+        int m_totalSurfaceCount;
 };

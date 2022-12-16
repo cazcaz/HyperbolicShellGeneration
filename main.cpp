@@ -1,13 +1,13 @@
 #include "batchGen.h"
 
 int main(int, char**) {
-    double stiffLengthStart = 1;
+    double stiffLengthStart = 0.01;
     double DCStart = 0.0001;
-    double stiffLengthEnd = 10;
+    double stiffLengthEnd = 0.1;
     double DCEnd = 0.01;
     double ExLStart = 0.1;
     double ExLEnd = 10;
-    int parameterSpaceResolution = 49;
+    int parameterSpaceResolution = 1;
 
     std::vector<ShellParams> parameterList;
     BatchGen massCalcer;
@@ -36,19 +36,31 @@ int main(int, char**) {
     //     }
     // }
 
-        for (double stiffLengthCirc : stiffLengthsCircum) {
-            for (double stiffLengthRad : stiffLengthsRadial) {
+        // for (double stiffLengthCirc : stiffLengthsCircum) {
+        //     for (double stiffLengthRad : stiffLengthsRadial) {
+        //     ShellParams parameters;
+        //     parameters.resolution = 10;
+        //     parameters.extensionLength = 0.1;
+        //     parameters.expansions = 9;
+        //     parameters.desiredCurvature = 0.001;
+        //     parameters.stiffLengthRatioCircum = stiffLengthCirc;
+        //     parameters.stiffLengthRatioRadial = stiffLengthRad;
+        //     parameterList.push_back(parameters);
+        //     }
+        // }
+
+        int orig = 1000;
+        for(int i =0 ; i<5 ; i++){
             ShellParams parameters;
-            parameters.resolution = 500;
+            parameters.resolution = 5000;
             parameters.extensionLength = 0.1;
-            parameters.expansions = 100;
+            parameters.expansions = orig;
             parameters.desiredCurvature = 0.001;
-            parameters.stiffLengthRatioCircum = stiffLengthCirc;
-            parameters.stiffLengthRatioRadial = stiffLengthRad;
+            parameters.stiffLengthRatioCircum = 0.0001;
+            parameters.stiffLengthRatioRadial = 0.0000001;
             parameterList.push_back(parameters);
-            }
+            orig += 1000;
         }
-    
 
     massCalcer.calculateAll(parameterList);
     return 0;

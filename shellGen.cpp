@@ -42,8 +42,8 @@ bool ShellGen::expandCurve() {
     //Nicely behaved tangents
     double angleChange = 2 * M_PI / m_parameters.resolution;
     for (int i =0; i<m_parameters.resolution;i++){
-            //Vector3d nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
-            Vector3d nextTangent = m_surface[curveCount-1][correctIndex(i+1)] - m_surface[curveCount-1][correctIndex(i-1)];
+            Vector3d nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
+            //Vector3d nextTangent = m_surface[curveCount-1][correctIndex(i+1)] - m_surface[curveCount-1][correctIndex(i-1)];
             nextTangent.normalize();
             Vector3d nextBinormal(normals[i][1]*nextTangent[2] - normals[i][2]*nextTangent[1] ,normals[i][2]*nextTangent[0] - normals[i][0]*nextTangent[2], normals[i][0]*nextTangent[1] - normals[i][1]*nextTangent[0]);
             //nextBinormal.normalize();
@@ -109,6 +109,13 @@ int ShellGen::correctIndex(int index){
 };
 
 void ShellGen::printSurface() {
+    int fileSizeAim = 50000; //In kilobytes, assumes 100 bytes per point in mesh
+    int maxRes = 200;
+    int pointCount = m_parameters.resolution * m_surface.size();
+    //bool needsCompress = (pointCount > fileSizeAim*10.24);
+    bool needsCompress = false;
+    
+
     ShellName namer;
     std::string fileName = namer.makeName(m_parameters);
     int surfaceLength = m_surface.size();
@@ -120,16 +127,56 @@ void ShellGen::printSurface() {
     std::ofstream open(path);
     std::ofstream surfaceFile("..\\OutputSurfaceTxts\\" + fileName + ".txt");
 
-    int endCheck = 0;
-    for (std::vector<Vector3d> curve : m_surface){
-        endCheck++;
-        for (Vector3d point : curve){
+    if (needsCompress) {
+        std::vector<int> radialIndices;
+        std::vector<int> circumIndices;
+        if (m_parameters.resolution > maxRes) {
+            double pointGap = double(m_parameters.resolution) / double(maxRes);
+            for (int i = 0; i < maxRes; i++){
+                radialIndices.push_back(int(pointGap*i));
+            }
+            if (radialIndices[radialIndices.size()-1] != m_surface.size()-1) {
+                radialIndices.push_back(m_surface.size()-1);
+            }
+            pointCount = radialIndices.size() * m_parameters.resolution;
+            needsCompress = (pointCount > fileSizeAim*10.24);
+        } else {
+            for (int i = 0; i < maxRes; i++){
+                radialIndices.push_back(i);
+            }
+        }
+        double pointGap = double(pointCount) / (double(fileSizeAim)*10.24);
+        if (needsCompress) {
+            for (int i = 0; i < int(m_surface.size()/pointGap); i++){
+                circumIndices.push_back(int(pointGap*i));
+            }
+            if (circumIndices[circumIndices.size()-1] != m_surface.size()-1) {
+                circumIndices.push_back(m_surface.size()-2);
+            }
+        } else {
+            for (int i = 0; i < m_surface.size(); i++){
+                radialIndices.push_back(i);
+            }
+        }
+        for(int circumIndex : circumIndices) {
+            for(int radialIndex : radialIndices) {
+            surfaceFile << m_surface[circumIndex][radialIndex][0] << ",";
+            surfaceFile << m_surface[circumIndex][radialIndex][1] << ",";
+            surfaceFile << m_surface[circumIndex][radialIndex][2] << " ";
+            }
+        surfaceFile << "\n";
+        }
+    } else {
+        for (std::vector<Vector3d> curve : m_surface){
+            for (Vector3d point : curve){
             surfaceFile << point[0] << ",";
             surfaceFile << point[1] << ",";
             surfaceFile << point[2] << " ";
-        }
+            }
         surfaceFile << "\n";
+        }
     }
+    
     surfaceFile.close();
 }
 
