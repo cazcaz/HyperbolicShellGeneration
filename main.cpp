@@ -50,17 +50,14 @@ int main(int, char**) {
         // }
 
         int orig = 1000;
-        for(int i =0 ; i<5 ; i++){
             ShellParams parameters;
             parameters.resolution = 5000;
-            parameters.extensionLength = 0.1;
+            parameters.extensionLength = 10;
             parameters.expansions = orig;
             parameters.desiredCurvature = 0.001;
-            parameters.stiffLengthRatioCircum = 0.0001;
-            parameters.stiffLengthRatioRadial = 0.0000001;
+            parameters.stiffLengthRatioCircum = 0.1;
+            parameters.stiffLengthRatioRadial = 1;
             parameterList.push_back(parameters);
-            orig += 1000;
-        }
 
     massCalcer.calculateAll(parameterList);
     return 0;

@@ -53,6 +53,7 @@ bool ShellGen::expandCurve() {
 
     double initialDist = 1;
     double radialDist = 1 + (curveCount-1) * m_parameters.extensionLength;
+    bool success = true;
 
     //minimsation time
     EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, m_parameters, radialDist);
@@ -63,7 +64,9 @@ bool ShellGen::expandCurve() {
     try {
         int iterCount = solver.minimize(energyFunctional, m_prevSol, energy);
         if (iterCount == 200) {
-            //std::cout << "Max iterations reached, continuing." << std::endl;
+            m_parameters.extensionLength *= 0.5;
+            std::cout << "Max iterations reached, halving extension length and trying again." << std::endl;
+            success = false;
         }
     } catch(...) {
         //std::cout << "Failed from error in calcualtion." << std::endl;
@@ -78,7 +81,9 @@ bool ShellGen::expandCurve() {
         }
         nextCurve.push_back(m_surface[curveCount-1][i] + m_parameters.extensionLength * normals[i] + m_parameters.extensionLength* m_prevSol[i] * binormals[i]);
     }
-    m_surface.push_back(nextCurve);
+    if (success) {
+        m_surface.push_back(nextCurve);
+    }
     return true;
 }
 
@@ -112,8 +117,8 @@ void ShellGen::printSurface() {
     int fileSizeAim = 50000; //In kilobytes, assumes 100 bytes per point in mesh
     int maxRes = 200;
     int pointCount = m_parameters.resolution * m_surface.size();
-    //bool needsCompress = (pointCount > fileSizeAim*10.24);
-    bool needsCompress = false;
+    bool needsCompress = (pointCount > fileSizeAim*10.24);
+    //bool needsCompress = false;
     
 
     ShellName namer;
@@ -136,7 +141,7 @@ void ShellGen::printSurface() {
                 radialIndices.push_back(int(pointGap*i));
             }
             if (radialIndices[radialIndices.size()-1] != m_surface.size()-1) {
-                radialIndices.push_back(m_surface.size()-1);
+                radialIndices.push_back(m_parameters.resolution-1);
             }
             pointCount = radialIndices.size() * m_parameters.resolution;
             needsCompress = (pointCount > fileSizeAim*10.24);
