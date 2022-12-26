@@ -39,7 +39,7 @@ bool ShellGen::expandCurve() {
             normals.push_back(nextPoint);
         }
     }
-    //Nicely behaved tangents
+    // Nicely behaved tangents
     double angleChange = 2 * M_PI / m_parameters.resolution;
     for (int i =0; i<m_parameters.resolution;i++){
             Vector3d nextTangent(-std::sin(angleChange * i), std::cos(angleChange *i), 0);
@@ -55,7 +55,7 @@ bool ShellGen::expandCurve() {
     double radialDist = 1 + (curveCount-1) * m_parameters.extensionLength;
     bool success = true;
 
-    //minimsation time
+    // Minimisation time
     EnergyFunction energyFunctional(m_surface[curveCount-1], normals, binormals, m_parameters, radialDist);
     LBFGSpp::LBFGSParam<double> param;
     param.max_iterations = 200;
@@ -66,7 +66,7 @@ bool ShellGen::expandCurve() {
         if (iterCount == 200) {
             m_parameters.extensionLength *= 0.5;
             std::cout << "Max iterations reached, halving extension length and trying again." << std::endl;
-            success = false;
+            //success = false;
         }
     } catch(...) {
         //std::cout << "Failed from error in calcualtion." << std::endl;

@@ -1,4 +1,3 @@
-#pragma once
 #include "circleGen.h"
 #include <cmath>
 #include <iostream>
